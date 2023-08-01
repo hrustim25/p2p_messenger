@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package msgr.grpc;
+
+message RegistrationRequest {
+    string address = 1;
+}
+
+message RegistrationResponse {
+    string user_id = 1;
+}
+
+message UpdateDataRequest {
+    string address = 1;
+    string user_id = 2;
+}
+
+message UpdateDataResponse {
+}
+
+message ClientAddressRequest {
+    string sender_id = 1;
+    string client_id = 2;
+}
+
+message ClientAddressResponse {
+    string client_address = 1;
+}
+
+service ClientToServerCaller {
+    rpc Register (RegistrationRequest) returns (RegistrationResponse) {}
+    rpc UpdateData (UpdateDataRequest) returns (UpdateDataResponse) {}
+    rpc GetClientAddress (ClientAddressRequest) returns (ClientAddressResponse) {}
+}
