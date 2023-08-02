@@ -10,7 +10,6 @@ message SendMessageRequest {
 }
 
 message SendMessageResponse {
-    uint32 status = 1;
 }
 
 service ClientToClientCaller {
