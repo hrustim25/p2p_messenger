@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package msgr.grpc;
+
+message SendMessageRequest {
+  string source_id = 1;
+  string destination_id = 2;
+  string msg = 3;
+  uint32 msg_number = 4;
+}
+
+message SendMessageResponse {
+  string status = 1;
+}
+
+service ClientToClientCaller {
+  rpc SendMessage (SendMessageRequest) returns (SendMessageResponse) {}
+}

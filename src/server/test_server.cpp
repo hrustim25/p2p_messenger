@@ -31,7 +31,7 @@ public:
     ::grpc::Status GetClientAddress(::grpc::ServerContext* context,
                                     const ::msgr::grpc::ClientAddressRequest* request,
                                     ::msgr::grpc::ClientAddressResponse* response) override {
-        response->set_client_address(ips_[request->client_id()]);
+        response->set_receiver_address(ips_[request->client_id()]);
         return ::grpc::Status::OK;
     }
 
@@ -54,7 +54,7 @@ void RunServer(std::string server_address) {
 int main(void) {
     std::cout << "Starting gRPC server..." << std::endl;
 
-    RunServer("0.0.0.0:1337");
+    RunServer("0.0.0.0:9999");
 
     return 0;
 }

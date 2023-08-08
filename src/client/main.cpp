@@ -1,0 +1,40 @@
+#include "client.h"
+
+#include <iostream>
+
+int main(void) {
+    std::cout << "Starting gRPC client..." << std::endl;
+
+    // Set up server address
+    std::string server_address("0.0.0.0:9999");
+
+    // Launch client
+    msgr::Client client(server_address);
+
+    while (true) {
+        std::string cmd;
+        std::cin >> cmd;
+        if (cmd == "reg") {
+            std::cout << "Registration request is sent. Result:" << std::endl;
+            client.Register();
+        } else if (cmd == "upd") {
+            std::cout << "Update data request is sent. Result: " << std::endl;
+            client.UpdateData();
+        } else if (cmd == "sendmsg") {
+            std::string client_id, msg;
+            std::cin >> client_id >> msg;
+            std::cout << "Send message request is sent. Result: " << std::endl;
+            client.SendMessage(client_id, msg);
+        } else if (cmd == "getmsgs") {
+            std::string client_id;
+            std::cin >> client_id;
+            for (auto el : client.GetMessages(client_id)) {
+                std::cout << el.sender_id_ << "> " << el.msg_ << std::endl;
+            }
+        } else {
+            std::cout << "Unknown command." << std::endl;
+        }
+    }
+
+    return 0;
+}

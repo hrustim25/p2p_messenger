@@ -1,3 +1,3 @@
-add_subdirectory(protos)
+add_subdirectory(proto)
 add_subdirectory(client)
 add_subdirectory(server)

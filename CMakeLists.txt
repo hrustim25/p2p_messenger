@@ -4,11 +4,10 @@ project(p2p_messenger C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Protobuf REQUIRED)
-
 add_subdirectory(src)
 
 include(FetchContent)
+
 FetchContent_Declare(
     gRPC
     GIT_REPOSITORY https://github.com/grpc/grpc
@@ -17,10 +16,17 @@ FetchContent_Declare(
 set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(gRPC)
 
+FetchContent_Declare(
+    sqliteOrm
+    GIT_REPOSITORY https://github.com/fnc12/sqlite_orm
+    GIT_TAG        v1.8.2
+)
+FetchContent_MakeAvailable(sqliteOrm)
+
 # Proto generation
 
 foreach(proto_name client_to_server client_to_client)
-    get_filename_component(msgr_proto "src/protos/${proto_name}.proto" ABSOLUTE)
+    get_filename_component(msgr_proto "src/proto/${proto_name}.proto" ABSOLUTE)
     get_filename_component(msgr_proto_path "${msgr_proto}" PATH)
     message(STATUS "Using proto file: ${msgr_proto}")
 
@@ -55,13 +61,20 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 # Test Client
 
-add_executable(test_client src/client/test_client.cpp)
-target_link_libraries(test_client PRIVATE
+add_library(client_lib
+    src/client/message_handler.cpp
+    src/client/account_handler.cpp
+    src/client/client.cpp)
+target_link_libraries(client_lib
     client_to_server_proto_lib
     client_to_client_proto_lib
+    sqlite_orm::sqlite_orm
     grpc++_reflection
     grpc++
     libprotobuf)
+
+add_executable(client src/client/main.cpp)
+target_link_libraries(client PRIVATE client_lib)
 
 # Test Server
 
