@@ -2,7 +2,6 @@ package org.p2p.server;
 
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;

@@ -3,22 +3,7 @@ package org.p2p.server;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import msgr.grpc.ClientToServerCallerGrpc;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.impl.QueryImpl;
-
 import java.io.IOException;
 
 class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBase {
@@ -32,6 +17,7 @@ class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBa
             responseObserver.onNext(msgr.grpc.ClientToServer
                     .RegistrationResponse
                     .newBuilder()
+                    .setStatus("ok")
                     .setUserId(String.valueOf(clientIpEntity.getId()))
                     .build());
             responseObserver.onCompleted();
@@ -98,11 +84,12 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-       Server server = ServerBuilder.forPort(9999)
+       Server server = ServerBuilder.forPort(args.length == 0? 9999: Integer.parseInt(args[0]))
                 .addService(new ClientToServer())
                 .build();
         server.start();
-        System.out.println(Thread.currentThread().threadId());
+        System.out.println(server.getPort());
+        System.out.println("hui");
         System.out.println("Server has started!");
 
         server.awaitTermination();
