@@ -1,2 +1,3 @@
-# p2p_messenger
-P2P messenger
+# How to run the server:
+Inside a project root folder run:
+```docker-compose up --build --force-recreate```
