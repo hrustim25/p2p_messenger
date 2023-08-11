@@ -6,7 +6,9 @@ int main(void) {
     std::cout << "Starting gRPC client..." << std::endl;
 
     // Set up server address
-    std::string server_address("0.0.0.0:9999");
+    std::string server_address;
+    std::cout << "Write server address:" << std::endl;
+    std::cin >> server_address;
 
     // Launch client
     msgr::Client client(server_address);
@@ -31,6 +33,8 @@ int main(void) {
             for (auto el : client.GetMessages(client_id)) {
                 std::cout << el.sender_id_ << "> " << el.msg_ << std::endl;
             }
+        } else if (cmd == "exit") {
+            break;
         } else {
             std::cout << "Unknown command." << std::endl;
         }

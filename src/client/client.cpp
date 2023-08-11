@@ -11,8 +11,8 @@ Client::Client(const std::string& server_address)
       channel_(::grpc::CreateChannel(server_address, ::grpc::InsecureChannelCredentials())),
       stub_(::msgr::grpc::ClientToServerCaller::NewStub(channel_)) {
 
-    std::srand(std::time(0));
-    recieve_address_ = "0.0.0.0:" + std::to_string((std::rand() % 10000) + 2000);
+    std::cout << "Write client recieve address:" << std::endl;
+    std::cin >> recieve_address_;
 
     ::grpc::ServerBuilder builder;
     builder.AddListeningPort(recieve_address_, ::grpc::InsecureServerCredentials());
