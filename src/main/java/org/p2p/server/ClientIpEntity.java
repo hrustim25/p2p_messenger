@@ -1,17 +1,18 @@
 package org.p2p.server;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "ClientIp")
+@Entity(name = "client_ip")
 public class ClientIpEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

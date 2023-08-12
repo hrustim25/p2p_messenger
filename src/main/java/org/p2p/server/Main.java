@@ -4,16 +4,23 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import msgr.grpc.ClientToServerCallerGrpc;
-import java.io.IOException;
+import org.lognet.springboot.grpc.GRpcService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.IOException;
+@GRpcService
 class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBase {
+    @Autowired
+    ClientIpService clientIpService;
     @Override
     public void register(msgr.grpc.ClientToServer.RegistrationRequest request, StreamObserver<msgr.grpc.ClientToServer.RegistrationResponse> responseObserver) {
-        if (ClientIpService.getbyIp(request.getAddress()).isEmpty()) {
+        if (clientIpService.getByIp(request.getAddress()).isEmpty()) {
             ClientIpEntity clientIpEntity = new ClientIpEntity(request.getAddress());
-            ClientIpService.save(clientIpEntity);
+            clientIpService.save(clientIpEntity);
             System.out.println("mem" + clientIpEntity.getId());
-            clientIpEntity = ClientIpService.getbyIp(clientIpEntity.getIp()).get();
+            clientIpEntity = clientIpService.getByIp(clientIpEntity.getIp()).get();
             responseObserver.onNext(msgr.grpc.ClientToServer
                     .RegistrationResponse
                     .newBuilder()
@@ -35,9 +42,9 @@ class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBa
 
     @Override
     public void updateData(msgr.grpc.ClientToServer.UpdateDataRequest updateDataRequest, StreamObserver<msgr.grpc.ClientToServer.UpdateDataResponse> updateDataResponseStreamObserver) {
-        if (ClientIpService.getById(Long.parseLong(updateDataRequest.getUserId())).isPresent()){
+        if (clientIpService.getById(Long.parseLong(updateDataRequest.getUserId())).isPresent()){
             ClientIpEntity clientIpEntity = new ClientIpEntity(Long.parseLong(updateDataRequest.getUserId()), updateDataRequest.getAddress());
-            ClientIpService.update(clientIpEntity);
+            clientIpService.update(clientIpEntity);
             updateDataResponseStreamObserver
                     .onNext(msgr.grpc.ClientToServer
                             .UpdateDataResponse
@@ -59,8 +66,8 @@ class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBa
 
     @Override
     public void getClientAddress(msgr.grpc.ClientToServer.ClientAddressRequest clientAddressRequest, StreamObserver<msgr.grpc.ClientToServer.ClientAddressResponse> clientAddressResponseStreamObserver) {
-        if (ClientIpService.getById(Long.parseLong(clientAddressRequest.getReceiverId())).isPresent()){
-            ClientIpEntity clientIpEntity = ClientIpService.getById(Long.parseLong(clientAddressRequest.getReceiverId())).get();
+        if (clientIpService.getById(Long.parseLong(clientAddressRequest.getReceiverId())).isPresent()){
+            ClientIpEntity clientIpEntity = clientIpService.getById(Long.parseLong(clientAddressRequest.getReceiverId())).get();
             clientAddressResponseStreamObserver.onNext(msgr.grpc.ClientToServer
                     .ClientAddressResponse
                     .newBuilder()
@@ -79,21 +86,15 @@ class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBa
         }
     }
 }
-
+@SpringBootApplication
 public class Main {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-       Server server = ServerBuilder.forPort(args.length == 0? 9999: Integer.parseInt(args[0]))
-                .addService(new ClientToServer())
-                .build();
-        server.start();
-        System.out.println(server.getPort());
+        SpringApplication.run(Main.class, args);
         System.out.println("hui");
         System.out.println("Server has started!");
-
-        server.awaitTermination();
-     //   System.out.println(ClientIpService.getbyIp("huh").get().getIp());
+        //   System.out.println(ClientIpService.getbyIp("huh").get().getIp());
         //ClientIpService.update(new ClientIpEntity((long)2, "huh"));
     }
 }

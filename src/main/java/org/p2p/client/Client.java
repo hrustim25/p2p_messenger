@@ -15,9 +15,10 @@ public class Client {
         ClientToServerCallerGrpc.ClientToServerCallerBlockingStub stub =
                 ClientToServerCallerGrpc
                 .newBlockingStub(managedChannel);
-        ClientToServer.RegistrationResponse registrationResponse = stub.register(ClientToServer.RegistrationRequest.newBuilder().setAddress("llr").build());
-       System.out.println(registrationResponse.getUserId());
-      //  ClientToServer.ClientAddressResponse clientAddressResponse = stub.getClientAddress(ClientToServer.ClientAddressRequest.newBuilder().setClientId(String.valueOf(999999)).setReceiverId(String.valueOf(2)).build());
-      //  System.out.println(clientAddressResponse.getReceiverAddress());
+        ClientToServer.UpdateDataResponse updateDataResponse = stub.updateData(ClientToServer.UpdateDataRequest.newBuilder().setAddress("newadd").setUserId(String.valueOf(6)).build());
+        //ClientToServer.RegistrationResponse registrationResponse = stub.register(ClientToServer.RegistrationRequest.newBuilder().setAddress("aaskfsa").build());
+     // System.out.println(registrationResponse.getUserId());
+    //    ClientToServer.ClientAddressResponse clientAddressResponse = stub.getClientAddress(ClientToServer.ClientAddressRequest.newBuilder().setClientId(String.valueOf(2)).setReceiverId(String.valueOf(3)).build());
+     //  System.out.println(clientAddressResponse.getReceiverAddress());
     }
 }
