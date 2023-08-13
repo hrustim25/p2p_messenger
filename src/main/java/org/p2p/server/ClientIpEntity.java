@@ -12,7 +12,7 @@ import javax.persistence.Id;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "client_ip")
+@Entity(name = "ClientIp")
 public class ClientIpEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

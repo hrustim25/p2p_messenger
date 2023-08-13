@@ -1,16 +1,20 @@
 package org.p2p.server;
 
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
+//import io.grpc.stub.StreamObserver;
+//import msgr.grpc.ClientToServerCallerGrpc;
+//import org.lognet.springboot.grpc.GRpcService;
 import io.grpc.stub.StreamObserver;
 import msgr.grpc.ClientToServerCallerGrpc;
-import org.lognet.springboot.grpc.GRpcService;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-@GRpcService
+
+@GrpcService
 class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBase {
     @Autowired
     ClientIpService clientIpService;
@@ -96,5 +100,15 @@ public class Main {
         System.out.println("Server has started!");
         //   System.out.println(ClientIpService.getbyIp("huh").get().getIp());
         //ClientIpService.update(new ClientIpEntity((long)2, "huh"));
+    }
+}
+
+@Component
+class kek implements CommandLineRunner{
+    @Autowired
+    ClientIpRepo repo;
+    @Override
+    public void run(String... args) throws Exception {
+        repo.save(new ClientIpEntity("kekich"));
     }
 }

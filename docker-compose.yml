@@ -11,14 +11,10 @@ services:
       - db
 
   db:
-    image: postgres
+    image: postgres:alpine
     ports:
       - 15432:5432
     container_name: server_database
-    environment:
-      - POSTGRES_USER=string
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_DB=str
 
 networks:
   datalink:
