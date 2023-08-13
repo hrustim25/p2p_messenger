@@ -70,8 +70,8 @@ class ClientToServer extends ClientToServerCallerGrpc.ClientToServerCallerImplBa
 
     @Override
     public void getClientAddress(msgr.grpc.ClientToServer.ClientAddressRequest clientAddressRequest, StreamObserver<msgr.grpc.ClientToServer.ClientAddressResponse> clientAddressResponseStreamObserver) {
-        if (clientIpService.getById(Long.parseLong(clientAddressRequest.getReceiverId())).isPresent()){
-            ClientIpEntity clientIpEntity = clientIpService.getById(Long.parseLong(clientAddressRequest.getReceiverId())).get();
+        if (clientIpService.getById(Long.parseLong(clientAddressRequest.getClientId())).isPresent()){
+            ClientIpEntity clientIpEntity = clientIpService.getById(Long.parseLong(clientAddressRequest.getClientId())).get();
             clientAddressResponseStreamObserver.onNext(msgr.grpc.ClientToServer
                     .ClientAddressResponse
                     .newBuilder()
