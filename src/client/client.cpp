@@ -123,8 +123,8 @@ std::string Client::GetRecieveAddress() const {
 std::string Client::GetClientAddress(const std::string& client_id) {
     ::grpc::ClientContext context;
     ::msgr::grpc::ClientAddressRequest request;
-    request.set_receiver_id(client_id);
-    request.set_client_id(account_handler_.GetAccountData().account_id);
+    request.set_receiver_id(account_handler_.GetAccountData().account_id);
+    request.set_client_id(client_id);
     ::msgr::grpc::ClientAddressResponse response;
 
     ::grpc::Status status = stub_->GetClientAddress(&context, request, &response);
