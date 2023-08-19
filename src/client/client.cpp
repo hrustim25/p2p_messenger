@@ -1,15 +1,40 @@
 #include "client.h"
 
 #include <iostream>
+#include <fstream>
 
 namespace msgr {
+
+static std::string ReadCertFile(const std::string& filename) {
+    std::ifstream cert_fstream(filename);
+    std::string result;
+    if (!cert_fstream.is_open()) {
+        return result;
+    }
+    while (cert_fstream.good()) {
+        char ch;
+        cert_fstream.get(ch);
+        if (cert_fstream.eof()) {
+            break;
+        }
+        result += ch;
+    }
+    return result;
+}
 
 Client::Client(const std::string& server_address)
     : message_handler_(std::make_shared<msgr::MessageHandler>()),
       account_handler_(),
-      client_service_(message_handler_),
-      channel_(::grpc::CreateChannel(server_address, ::grpc::InsecureChannelCredentials())),
-      stub_(::msgr::grpc::ClientToServerCaller::NewStub(channel_)) {
+      client_service_(message_handler_) {
+
+    ::grpc::SslCredentialsOptions ssl_options;
+    ssl_options.pem_root_certs = ReadCertFile("servercrt.pem");
+    if (ssl_options.pem_root_certs.empty()) {
+        channel_ = ::grpc::CreateChannel(server_address, ::grpc::InsecureChannelCredentials());
+    } else {
+        channel_ = ::grpc::CreateChannel(server_address, ::grpc::SslCredentials(ssl_options));
+    }
+    stub_ = ::msgr::grpc::ClientToServerCaller::NewStub(channel_);
 
     std::cout << "Write client recieve address:" << std::endl;
     std::cin >> recieve_address_;

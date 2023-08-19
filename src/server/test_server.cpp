@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <fstream>
 
 namespace msgr {
 
@@ -40,11 +41,50 @@ private:
 };
 }  // namespace msgr
 
+static std::string ReadCertFile(const std::string& filename) {
+    std::ifstream cert_fstream(filename);
+    std::string result;
+    if (!cert_fstream.is_open()) {
+        return result;
+    }
+    while (cert_fstream.good()) {
+        char ch;
+        cert_fstream.get(ch);
+        if (cert_fstream.eof()) {
+            break;
+        }
+        result += ch;
+    }
+    return result;
+}
+
+::grpc::SslServerCredentialsOptions GetSecureServerCredentialsOptions() {
+    ::grpc::SslServerCredentialsOptions ssl_options;
+
+    ssl_options.pem_root_certs = ReadCertFile("rootcrt.pem");
+
+    ::grpc::SslServerCredentialsOptions::PemKeyCertPair key_pair;
+    key_pair.cert_chain = ReadCertFile("servercrt.pem");
+    key_pair.private_key = ReadCertFile("serverkey.pem");
+
+    if (!key_pair.cert_chain.empty() && !key_pair.private_key.empty()) {
+        ssl_options.pem_key_cert_pairs.push_back(key_pair);
+    }
+    return ssl_options;
+}
+
 void RunServer(std::string server_address) {
     msgr::ClientToServerCallerImpl service;
 
     ::grpc::ServerBuilder builder;
-    builder.AddListeningPort(server_address, ::grpc::InsecureServerCredentials());
+
+    ::grpc::SslServerCredentialsOptions ssl_server_options = GetSecureServerCredentialsOptions();
+    if (ssl_server_options.pem_root_certs.empty() ||
+        ssl_server_options.pem_key_cert_pairs.empty()) {
+        builder.AddListeningPort(server_address, ::grpc::InsecureServerCredentials());
+    } else {
+        builder.AddListeningPort(server_address, ::grpc::SslServerCredentials(ssl_server_options));
+    }
     builder.RegisterService(&service);
     std::unique_ptr<::grpc::Server> server(builder.BuildAndStart());
     std::cout << "Server listening on " << server_address << std::endl;
@@ -54,7 +94,7 @@ void RunServer(std::string server_address) {
 int main(void) {
     std::cout << "Starting gRPC server..." << std::endl;
 
-    RunServer("0.0.0.0:9999");
+    RunServer("localhost:9999");
 
     return 0;
 }
