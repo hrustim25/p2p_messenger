@@ -23,6 +23,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sqliteOrm)
 
+find_package(OpenSSL REQUIRED)
+
 # Proto generation
 
 foreach(proto_name client_to_server client_to_client)
@@ -64,6 +66,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 add_library(client_lib
     src/client/message_handler.cpp
     src/client/account_handler.cpp
+    src/client/security.cpp
     src/client/client.cpp)
 target_link_libraries(client_lib
     client_to_server_proto_lib
@@ -71,7 +74,8 @@ target_link_libraries(client_lib
     sqlite_orm::sqlite_orm
     grpc++_reflection
     grpc++
-    libprotobuf)
+    libprotobuf
+    ${OPENSSL_LIBRARIES})
 
 add_executable(client src/client/main.cpp)
 target_link_libraries(client PRIVATE client_lib)

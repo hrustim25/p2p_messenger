@@ -6,7 +6,7 @@ P2P messenger
 
 Nessesary lib installation:
 ```
-sudo apt install -y build-essential autoconf libtool pkg-config cmake libsqlite3-dev
+sudo apt install -y build-essential autoconf libtool pkg-config cmake libsqlite3-dev libssl-dev
 ```
 
 Build client with:

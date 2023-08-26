@@ -10,7 +10,8 @@ RUN apt update && apt install -y --no-install-recommends \
     ca-certificates \
     cmake \
     git \
-    libsqlite3-dev
+    libsqlite3-dev \
+    libssl-dev
 RUN apt clean
 
 WORKDIR /app

@@ -27,7 +27,8 @@ message ClientAddressRequest {
 
 message ClientAddressResponse {
   string receiver_address = 1;
-  string status = 2;
+  string receiver_certificate = 2;
+  string status = 3;
 }
 
 service ClientToServerCaller {
