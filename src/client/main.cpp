@@ -2,8 +2,12 @@
 
 #include <iostream>
 
-int main(void) {
-    std::cout << "Starting gRPC client..." << std::endl;
+#include <glog/logging.h>
+
+int main(int argc, char* argv[]) {
+    google::InitGoogleLogging(argv[0]);
+
+    LOG(INFO) << "Starting gRPC client...\n";
 
     // Set up server address
     std::string server_address;

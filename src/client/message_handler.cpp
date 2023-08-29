@@ -2,7 +2,7 @@
 
 #include <sqlite_orm/sqlite_orm.h>
 
-#include <iostream>
+#include <glog/logging.h>
 
 namespace msgr {
 
@@ -19,6 +19,7 @@ MessageHandler::MessageHandleStatus MessageHandler::SaveMessage(const std::strin
     std::unique_lock lock(mtx_);
 
     std::string chat_table_name = "chat_" + client_id;
+    LOG(INFO) << "Saving message with client id: " << client_id << "\n";
     try {
         auto storage = sqlite_orm::make_storage(
             "message_db.sqlite",
@@ -30,8 +31,9 @@ MessageHandler::MessageHandleStatus MessageHandler::SaveMessage(const std::strin
         storage.sync_schema();
 
         storage.insert(message);
+        LOG(INFO) << "Saved successfully";
     } catch (std::system_error& err) {
-        std::cerr << "error occured: " << err.what() << std::endl;
+        LOG(ERROR) << "Error occured while saving message: " << err.what() << "\n";
         return MessageHandleStatus::DATABASE_ERROR;
     }
 
@@ -43,6 +45,7 @@ uint32_t MessageHandler::GetMessageCount(const std::string& client_id) const {
 
     uint32_t msg_count;
     std::string chat_table_name = "chat_" + client_id;
+    LOG(INFO) << "Loading message count with client id: " << client_id << "\n";
     try {
 
         auto storage = sqlite_orm::make_storage(
@@ -55,8 +58,9 @@ uint32_t MessageHandler::GetMessageCount(const std::string& client_id) const {
         storage.sync_schema();
 
         msg_count = storage.count<MessageData>();
+        LOG(INFO) << "Loaded message count successfully\n";
     } catch (std::system_error& err) {
-        std::cerr << "error occured: " << err.what() << std::endl;
+        LOG(ERROR) << "Error occured while loading message count: " << err.what() << "\n";
         return 0;
     }
     return msg_count;
@@ -67,6 +71,7 @@ std::vector<MessageData> MessageHandler::GetMessages(const std::string& client_i
 
     std::vector<MessageData> result;
     std::string chat_table_name = "chat_" + client_id;
+    LOG(INFO) << "Loading messages with client id: " << client_id << "\n";
     try {
         auto storage = sqlite_orm::make_storage(
             "message_db.sqlite",
@@ -78,8 +83,9 @@ std::vector<MessageData> MessageHandler::GetMessages(const std::string& client_i
         storage.sync_schema();
 
         result = storage.get_all<MessageData>();
+        LOG(INFO) << "Loaded messages successfully\n";
     } catch (std::system_error& err) {
-        std::cerr << "error occured: " << err.what() << std::endl;
+        LOG(ERROR) << "Error occured while loading messages: " << err.what() << "\n";
         return {};
     }
     return result;

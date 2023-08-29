@@ -25,6 +25,13 @@ FetchContent_MakeAvailable(sqliteOrm)
 
 find_package(OpenSSL REQUIRED)
 
+FetchContent_Declare(
+    gLog
+    GIT_REPOSITORY https://github.com/google/glog.git
+    GIT_TAG        v0.6.0
+)
+FetchContent_MakeAvailable(gLog)
+
 # Proto generation
 
 foreach(proto_name client_to_server client_to_client)
@@ -75,7 +82,8 @@ target_link_libraries(client_lib
     grpc++_reflection
     grpc++
     libprotobuf
-    ${OPENSSL_LIBRARIES})
+    ${OPENSSL_LIBRARIES}
+    glog::glog)
 
 add_executable(client src/client/main.cpp)
 target_link_libraries(client PRIVATE client_lib)
