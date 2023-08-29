@@ -7,6 +7,8 @@
 #include <openssl/x509.h>
 #include <openssl/pem.h>
 
+namespace msgr {
+
 std::string Security::LoadFile(const std::string &path) {
     std::ifstream fstream(path);
     std::string result;
@@ -53,3 +55,4 @@ void Security::GenerateAndSaveCerts() {
     std::unique_ptr<FILE, int (*)(FILE *)> fcert(fopen("clientcert.pem", "wb"), fclose);
     PEM_write_X509(fcert.get(), cert.get());
 }
+}  // namespace msgr

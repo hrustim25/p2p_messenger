@@ -2,6 +2,7 @@
 
 #include <string>
 
+namespace msgr {
 class Security {
 public:
     Security() = default;
@@ -9,3 +10,4 @@ public:
     static std::string LoadFile(const std::string& path);
     static void GenerateAndSaveCerts();
 };
+}  // namespace msgr
